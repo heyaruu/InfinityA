@@ -57,24 +57,25 @@ export default function Dashboard() {
 
       <main className="container mx-auto px-4 py-8 space-y-8">
         {/* Profile Card */}
-        <section className="glass-card rounded-2xl p-6 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/20 transition-all duration-700"></div>
-          
-          <div className="relative flex flex-col md:flex-row items-center gap-6">
-            <Avatar className="w-24 h-24 border-4 border-background shadow-xl">
-              {profile.photoUrl ? <AvatarImage src={profile.photoUrl} alt={profile.name} className="object-cover" /> : null}
-              <AvatarFallback className="text-2xl bg-secondary">{getInitials(profile.name)}</AvatarFallback>
-            </Avatar>
-            
-            <div className="flex-1 text-center md:text-left space-y-2">
-              <div className="space-y-1">
-                <h2 className="text-3xl font-bold text-white tracking-tight">{profile.name}</h2>
-                <div className="flex items-center justify-center md:justify-start gap-2 text-muted-foreground font-mono">
-                  <span>ID: {profile.affiliateId}</span>
-                </div>
+        <section className="profile-card rounded-3xl p-6 relative overflow-hidden">
+          <div className="relative flex items-center gap-5">
+            <div className="relative shrink-0">
+              <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-orange-400 to-pink-500"></div>
+              <Avatar className="relative w-20 h-20 sm:w-24 sm:h-24 border-4 border-[#1d3a8f]">
+                {profile.photoUrl ? <AvatarImage src={profile.photoUrl} alt={profile.name} className="object-cover" /> : null}
+                <AvatarFallback className="text-2xl bg-[#1d3a8f] text-white">{getInitials(profile.name)}</AvatarFallback>
+              </Avatar>
+            </div>
+
+            <div className="flex-1 text-left space-y-2">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0b1220] tracking-tight">{profile.name}</h2>
+              <div className="flex items-center gap-1.5 text-[#0b1220]/70 font-medium text-sm">
+                <span className="font-bold">#</span>
+                <span>GK ID: {profile.affiliateId}</span>
               </div>
-              <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold border-0 px-3 py-1">
-                {profile.packageLabel}
+              <Badge className="bg-white/15 text-white font-semibold border border-white/30 px-3 py-1.5 rounded-full gap-1.5 backdrop-blur-sm">
+                <Award className="w-3.5 h-3.5" />
+                {profile.packageLabel.toUpperCase()}
               </Badge>
             </div>
           </div>

@@ -98,6 +98,12 @@
   will-change: transform;
 }
 
+.profile-card {
+  background: linear-gradient(135deg, #5eb3f7 0%, #3b6fea 55%, #2447c9 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px -8px rgba(37, 99, 235, 0.5);
+}
+
 .glass-card {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(10px);

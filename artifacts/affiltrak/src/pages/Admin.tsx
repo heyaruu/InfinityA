@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -7,14 +7,17 @@ import {
   useGetDashboard, 
   useUpdateProfile, 
   useUpdateEarningMetric, 
+  useRequestUploadUrl,
   getGetDashboardQueryKey 
 } from "@workspace/api-client-react";
+import { ObjectUploader } from "@workspace/object-storage-web";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ArrowLeft, Save, IndianRupee, User, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Save, IndianRupee, User, ShieldAlert, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -23,7 +26,7 @@ const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   affiliateId: z.string().min(2, "ID must be at least 2 characters."),
   packageLabel: z.string().min(2, "Package label must be at least 2 characters."),
-  photoUrl: z.string().url("Must be a valid URL").or(z.literal("")).or(z.null()),
+  photoUrl: z.string().or(z.literal("")).or(z.null()),
 });
 
 const earningsSchema = z.object({
@@ -44,7 +47,9 @@ export default function Admin() {
   const { data: dashboard, isLoading } = useGetDashboard();
   const updateProfile = useUpdateProfile();
   const updateEarningMetric = useUpdateEarningMetric();
+  const requestUploadUrl = useRequestUploadUrl();
   const queryClient = useQueryClient();
+  const lastUploadedObjectPath = useRef<string | null>(null);
 
   const profileForm = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
@@ -220,10 +225,44 @@ export default function Admin() {
                     name="photoUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Photo URL (Optional)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="https://..." className="bg-background/50" {...field} value={field.value ?? ""} />
-                        </FormControl>
+                        <FormLabel>Profile Photo</FormLabel>
+                        <div className="flex items-center gap-4">
+                          <Avatar className="w-16 h-16 border-2 border-white/10 shrink-0">
+                            {field.value ? (
+                              <AvatarImage src={field.value} alt="Profile" className="object-cover" />
+                            ) : null}
+                            <AvatarFallback className="bg-secondary">
+                              <User className="w-6 h-6 text-muted-foreground" />
+                            </AvatarFallback>
+                          </Avatar>
+                          <ObjectUploader
+                            maxNumberOfFiles={1}
+                            maxFileSize={5242880}
+                            buttonClassName="inline-flex items-center gap-2 h-10 px-4 rounded-md bg-secondary hover:bg-secondary/80 text-sm font-medium transition-colors"
+                            onGetUploadParameters={async (file) => {
+                              const { uploadURL, objectPath } = await requestUploadUrl.mutateAsync({
+                                data: {
+                                  name: file.name ?? "photo",
+                                  size: file.size ?? 0,
+                                  contentType: file.type ?? "application/octet-stream",
+                                },
+                              });
+                              lastUploadedObjectPath.current = objectPath;
+                              return { method: "PUT", url: uploadURL, headers: { "Content-Type": file.type ?? "application/octet-stream" } };
+                            }}
+                            onComplete={(result) => {
+                              const objectPath = lastUploadedObjectPath.current;
+                              if (result.successful?.length && objectPath) {
+                                profileForm.setValue("photoUrl", `/api/storage${objectPath}`, { shouldDirty: true });
+                                toast.success("Photo uploaded — click Save Profile to apply");
+                              } else {
+                                toast.error("Photo upload failed, please try again");
+                              }
+                            }}
+                          >
+                            <Upload className="w-4 h-4" /> Upload Photo
+                          </ObjectUploader>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}

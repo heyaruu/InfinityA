@@ -8,8 +8,11 @@
 
 export * from './dashboardResponse';
 export * from './earnings';
+export * from './errorEnvelope';
 export * from './healthStatus';
 export * from './profile';
 export * from './updateEarningsRequest';
 export * from './updateEarningsRequestField';
 export * from './updateProfileRequest';
+export * from './uploadUrlRequest';
+export * from './uploadUrlResponse';
