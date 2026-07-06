@@ -81,33 +81,37 @@ export default function Dashboard() {
         </section>
 
         {/* Earning Cards */}
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           <EarningCard 
             title="Today's Earning" 
             amount={earnings.today} 
             gradient="bg-gradient-1" 
-            icon={<IndianRupee className="w-6 h-6 text-white/70" />}
+            glow="glow-1"
+            icon={<IndianRupee className="w-6 h-6 text-white" />}
             delay={0.1}
           />
           <EarningCard 
             title="Last 7 Days" 
             amount={earnings.sevenDay} 
             gradient="bg-gradient-2" 
-            icon={<TrendingUp className="w-6 h-6 text-white/70" />}
+            glow="glow-2"
+            icon={<TrendingUp className="w-6 h-6 text-white" />}
             delay={0.2}
           />
           <EarningCard 
             title="Last 30 Days" 
             amount={earnings.thirtyDay} 
             gradient="bg-gradient-3" 
-            icon={<Wallet className="w-6 h-6 text-white/70" />}
+            glow="glow-3"
+            icon={<Wallet className="w-6 h-6 text-white" />}
             delay={0.3}
           />
           <EarningCard 
             title="All Time Earning" 
             amount={earnings.allTime} 
             gradient="bg-gradient-4" 
-            icon={<Award className="w-6 h-6 text-white/70" />}
+            glow="glow-4"
+            icon={<Award className="w-6 h-6 text-white" />}
             delay={0.4}
           />
         </section>
@@ -116,22 +120,23 @@ export default function Dashboard() {
   );
 }
 
-function EarningCard({ title, amount, gradient, icon, delay }: { title: string, amount: number, gradient: string, icon: React.ReactNode, delay: number }) {
+function EarningCard({ title, amount, gradient, glow, icon, delay }: { title: string, amount: number, gradient: string, glow: string, icon: React.ReactNode, delay: number }) {
   return (
     <div 
-      className={`rounded-2xl p-6 ${gradient} shadow-lg shadow-black/50 relative overflow-hidden transform transition-all duration-500 hover:scale-[1.02] hover:-translate-y-1`}
+      className={`premium-card rounded-3xl p-6 ${gradient} ${glow} relative transform transition-all duration-500 hover:scale-[1.03] hover:-translate-y-1.5`}
       style={{ animationDelay: `${delay}s` }}
     >
-      <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-      <div className="relative z-10 flex flex-col h-full justify-between gap-4">
+      <div className="absolute -right-6 -top-6 w-28 h-28 bg-white/15 rounded-full blur-2xl pointer-events-none"></div>
+      <div className="absolute -left-8 -bottom-8 w-24 h-24 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
+      <div className="relative z-10 flex flex-col h-full justify-between gap-5">
         <div className="flex items-center justify-between">
-          <h3 className="text-white/80 font-medium text-sm tracking-wide uppercase">{title}</h3>
-          <div className="p-2 bg-black/20 rounded-full backdrop-blur-sm">
+          <h3 className="text-white/85 font-semibold text-xs tracking-widest uppercase">{title}</h3>
+          <div className="p-2.5 bg-white/15 rounded-full backdrop-blur-sm border border-white/20">
             {icon}
           </div>
         </div>
-        <div className="mt-4">
-          <div className="text-3xl lg:text-4xl font-mono font-bold text-white tracking-tight drop-shadow-md">
+        <div>
+          <div className="text-3xl lg:text-4xl font-mono font-extrabold text-white tracking-tight drop-shadow-lg">
             <CountUp end={amount} duration={2.5} prefix="₹" />
           </div>
         </div>

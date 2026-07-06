@@ -5,8 +5,10 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { UpdateEarningsRequestField } from './updateEarningsRequestField';
 
 export interface UpdateEarningsRequest {
+  field: UpdateEarningsRequestField;
   /** @minimum 0 */
   amount: number;
 }

@@ -6,7 +6,7 @@ import { Link } from "wouter";
 import { 
   useGetDashboard, 
   useUpdateProfile, 
-  useUpdateTodayEarning, 
+  useUpdateEarningMetric, 
   getGetDashboardQueryKey 
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -26,14 +26,24 @@ const profileSchema = z.object({
   photoUrl: z.string().url("Must be a valid URL").or(z.literal("")).or(z.null()),
 });
 
-const earningSchema = z.object({
-  amount: z.coerce.number().min(0, "Amount cannot be negative"),
+const earningsSchema = z.object({
+  today: z.coerce.number().min(0, "Amount cannot be negative"),
+  sevenDay: z.coerce.number().min(0, "Amount cannot be negative"),
+  thirtyDay: z.coerce.number().min(0, "Amount cannot be negative"),
+  allTime: z.coerce.number().min(0, "Amount cannot be negative"),
 });
+
+const EARNING_FIELDS: { field: keyof z.infer<typeof earningsSchema>; label: string }[] = [
+  { field: "today", label: "Today's Earning" },
+  { field: "sevenDay", label: "Last 7 Days" },
+  { field: "thirtyDay", label: "Last 30 Days" },
+  { field: "allTime", label: "All Time Earning" },
+];
 
 export default function Admin() {
   const { data: dashboard, isLoading } = useGetDashboard();
   const updateProfile = useUpdateProfile();
-  const updateEarning = useUpdateTodayEarning();
+  const updateEarningMetric = useUpdateEarningMetric();
   const queryClient = useQueryClient();
 
   const profileForm = useForm<z.infer<typeof profileSchema>>({
@@ -46,10 +56,13 @@ export default function Admin() {
     },
   });
 
-  const earningForm = useForm<z.infer<typeof earningSchema>>({
-    resolver: zodResolver(earningSchema),
+  const earningsForm = useForm<z.infer<typeof earningsSchema>>({
+    resolver: zodResolver(earningsSchema),
     defaultValues: {
-      amount: 0,
+      today: 0,
+      sevenDay: 0,
+      thirtyDay: 0,
+      allTime: 0,
     },
   });
 
@@ -61,11 +74,14 @@ export default function Admin() {
         packageLabel: dashboard.profile.packageLabel,
         photoUrl: dashboard.profile.photoUrl || "",
       });
-      earningForm.reset({
-        amount: dashboard.earnings.today,
+      earningsForm.reset({
+        today: dashboard.earnings.today,
+        sevenDay: dashboard.earnings.sevenDay,
+        thirtyDay: dashboard.earnings.thirtyDay,
+        allTime: dashboard.earnings.allTime,
       });
     }
-  }, [dashboard, profileForm, earningForm]);
+  }, [dashboard, profileForm, earningsForm]);
 
   const onProfileSubmit = (values: z.infer<typeof profileSchema>) => {
     updateProfile.mutate(
@@ -80,15 +96,22 @@ export default function Admin() {
     );
   };
 
-  const onEarningSubmit = (values: z.infer<typeof earningSchema>) => {
-    updateEarning.mutate(
-      { data: { amount: values.amount } },
+  const updateSingleMetric = (field: keyof z.infer<typeof earningsSchema>, label: string) => {
+    const amount = earningsForm.getValues(field);
+    updateEarningMetric.mutate(
+      { data: { field, amount } },
       {
         onSuccess: (data) => {
-          toast.success("Today's earning updated successfully");
+          toast.success(`${label} updated — other totals recalculated automatically`);
           queryClient.setQueryData(getGetDashboardQueryKey(), data);
+          earningsForm.reset({
+            today: data.earnings.today,
+            sevenDay: data.earnings.sevenDay,
+            thirtyDay: data.earnings.thirtyDay,
+            allTime: data.earnings.allTime,
+          });
         },
-        onError: () => toast.error("Failed to update earning"),
+        onError: () => toast.error(`Failed to update ${label}`),
       }
     );
   };
@@ -221,38 +244,46 @@ export default function Admin() {
           <Card className="bg-card/50 border-white/5 shadow-xl h-fit">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <IndianRupee className="w-5 h-5 text-green-500" /> Today's Earning
+                <IndianRupee className="w-5 h-5 text-green-500" /> Earnings
               </CardTitle>
-              <CardDescription>Set absolute amount for today. Other stats recalculate automatically.</CardDescription>
+              <CardDescription>
+                Edit any stat directly. All others (today, 7-day, 30-day, all-time) recalculate automatically to stay consistent.
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <Form {...earningForm}>
-                <form onSubmit={earningForm.handleSubmit(onEarningSubmit)} className="space-y-4">
-                  <FormField
-                    control={earningForm.control}
-                    name="amount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Amount (₹)</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="number" 
-                            className="bg-background/50 text-2xl font-mono py-6" 
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button 
-                    type="submit" 
-                    className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white"
-                    disabled={updateEarning.isPending}
-                  >
-                    {updateEarning.isPending ? "Updating..." : <><Save className="w-4 h-4 mr-2" /> Update Earnings</>}
-                  </Button>
-                </form>
+              <Form {...earningsForm}>
+                <div className="space-y-5">
+                  {EARNING_FIELDS.map(({ field: fieldKey, label }) => (
+                    <FormField
+                      key={fieldKey}
+                      control={earningsForm.control}
+                      name={fieldKey}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{label} (₹)</FormLabel>
+                          <div className="flex items-center gap-2">
+                            <FormControl>
+                              <Input
+                                type="number"
+                                className="bg-background/50 text-xl font-mono py-5"
+                                {...field}
+                              />
+                            </FormControl>
+                            <Button
+                              type="button"
+                              onClick={() => updateSingleMetric(fieldKey, label)}
+                              disabled={updateEarningMetric.isPending}
+                              className="bg-green-600 hover:bg-green-700 text-white shrink-0 h-11"
+                            >
+                              <Save className="w-4 h-4" />
+                            </Button>
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ))}
+                </div>
               </Form>
             </CardContent>
           </Card>

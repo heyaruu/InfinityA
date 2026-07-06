@@ -65,18 +65,19 @@ export const UpdateProfileResponse = zod.object({
 
 
 /**
- * Sets an absolute amount for today, which automatically recomputes 7-day, 30-day, and all-time rolling totals
- * @summary Set today's earning amount
+ * Sets an absolute value for today, 7-day, 30-day, or all-time earnings. The underlying daily ledger is adjusted so that all other rolling totals automatically recompute and stay consistent.
+ * @summary Set an absolute value for a given earning metric
  */
-export const updateTodayEarningBodyAmountMin = 0;
+export const updateEarningMetricBodyAmountMin = 0;
 
 
 
-export const UpdateTodayEarningBody = zod.object({
-  "amount": zod.number().min(updateTodayEarningBodyAmountMin)
+export const UpdateEarningMetricBody = zod.object({
+  "field": zod.enum(['today', 'sevenDay', 'thirtyDay', 'allTime']),
+  "amount": zod.number().min(updateEarningMetricBodyAmountMin)
 })
 
-export const UpdateTodayEarningResponse = zod.object({
+export const UpdateEarningMetricResponse = zod.object({
   "profile": zod.object({
   "name": zod.string(),
   "affiliateId": zod.string(),

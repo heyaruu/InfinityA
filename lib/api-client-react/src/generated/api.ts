@@ -280,7 +280,7 @@ export const useUpdateProfile = <TError = ErrorType<unknown>,
       return useMutation(getUpdateProfileMutationOptions(options));
     }
 
-export const getUpdateTodayEarningUrl = () => {
+export const getUpdateEarningMetricUrl = () => {
 
 
 
@@ -289,12 +289,12 @@ export const getUpdateTodayEarningUrl = () => {
 }
 
 /**
- * Sets an absolute amount for today, which automatically recomputes 7-day, 30-day, and all-time rolling totals
- * @summary Set today's earning amount
+ * Sets an absolute value for today, 7-day, 30-day, or all-time earnings. The underlying daily ledger is adjusted so that all other rolling totals automatically recompute and stay consistent.
+ * @summary Set an absolute value for a given earning metric
  */
-export const updateTodayEarning = async (updateEarningsRequest: UpdateEarningsRequest, options?: RequestInit): Promise<DashboardResponse> => {
+export const updateEarningMetric = async (updateEarningsRequest: UpdateEarningsRequest, options?: RequestInit): Promise<DashboardResponse> => {
 
-  return customFetch<DashboardResponse>(getUpdateTodayEarningUrl(),
+  return customFetch<DashboardResponse>(getUpdateEarningMetricUrl(),
   {
     ...options,
     method: 'PUT',
@@ -306,11 +306,11 @@ export const updateTodayEarning = async (updateEarningsRequest: UpdateEarningsRe
 
 
 
-export const getUpdateTodayEarningMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTodayEarning>>, TError,{data: BodyType<UpdateEarningsRequest>}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateTodayEarning>>, TError,{data: BodyType<UpdateEarningsRequest>}, TContext> => {
+export const getUpdateEarningMetricMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateEarningMetric>>, TError,{data: BodyType<UpdateEarningsRequest>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateEarningMetric>>, TError,{data: BodyType<UpdateEarningsRequest>}, TContext> => {
 
-const mutationKey = ['updateTodayEarning'];
+const mutationKey = ['updateEarningMetric'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -320,10 +320,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTodayEarning>>, {data: BodyType<UpdateEarningsRequest>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateEarningMetric>>, {data: BodyType<UpdateEarningsRequest>}> = (props) => {
           const {data} = props ?? {};
 
-          return  updateTodayEarning(data,requestOptions)
+          return  updateEarningMetric(data,requestOptions)
         }
 
 
@@ -333,21 +333,21 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type UpdateTodayEarningMutationResult = NonNullable<Awaited<ReturnType<typeof updateTodayEarning>>>
-    export type UpdateTodayEarningMutationBody = BodyType<UpdateEarningsRequest>
-    export type UpdateTodayEarningMutationError = ErrorType<unknown>
+    export type UpdateEarningMetricMutationResult = NonNullable<Awaited<ReturnType<typeof updateEarningMetric>>>
+    export type UpdateEarningMetricMutationBody = BodyType<UpdateEarningsRequest>
+    export type UpdateEarningMetricMutationError = ErrorType<unknown>
 
     /**
- * @summary Set today's earning amount
+ * @summary Set an absolute value for a given earning metric
  */
-export const useUpdateTodayEarning = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTodayEarning>>, TError,{data: BodyType<UpdateEarningsRequest>}, TContext>, request?: SecondParameter<typeof customFetch>}
+export const useUpdateEarningMetric = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateEarningMetric>>, TError,{data: BodyType<UpdateEarningsRequest>}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof updateTodayEarning>>,
+        Awaited<ReturnType<typeof updateEarningMetric>>,
         TError,
         {data: BodyType<UpdateEarningsRequest>},
         TContext
       > => {
-      return useMutation(getUpdateTodayEarningMutationOptions(options));
+      return useMutation(getUpdateEarningMetricMutationOptions(options));
     }
 

@@ -35,7 +35,18 @@ export interface UpdateProfileRequest {
   photoUrl?: string | null;
 }
 
+export type UpdateEarningsRequestField = typeof UpdateEarningsRequestField[keyof typeof UpdateEarningsRequestField];
+
+
+export const UpdateEarningsRequestField = {
+  today: 'today',
+  sevenDay: 'sevenDay',
+  thirtyDay: 'thirtyDay',
+  allTime: 'allTime',
+} as const;
+
 export interface UpdateEarningsRequest {
+  field: UpdateEarningsRequestField;
   /** @minimum 0 */
   amount: number;
 }

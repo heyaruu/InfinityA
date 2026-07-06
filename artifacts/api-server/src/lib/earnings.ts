@@ -71,3 +71,18 @@ export async function setTodayEarning(amount: number): Promise<void> {
       set: { amount: amount.toFixed(2) },
     });
 }
+
+export type EarningMetricField = "today" | "sevenDay" | "thirtyDay" | "allTime";
+
+export async function setEarningMetric(field: EarningMetricField, amount: number): Promise<EarningsSummary> {
+  if (field === "today") {
+    await setTodayEarning(amount);
+    return getEarningsSummary();
+  }
+
+  const summary = await getEarningsSummary();
+  const delta = amount - summary[field];
+  const newToday = Math.max(0, summary.today + delta);
+  await setTodayEarning(newToday);
+  return getEarningsSummary();
+}
