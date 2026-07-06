@@ -81,38 +81,30 @@ export default function Dashboard() {
         </section>
 
         {/* Earning Cards */}
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          <EarningCard 
-            title="Today's Earning" 
-            amount={earnings.today} 
-            gradient="bg-gradient-1" 
-            glow="glow-1"
+        <section className="flex flex-col gap-4">
+          <EarningCard
+            title="Today's Earning"
+            amount={earnings.today}
+            gradient="bg-gradient-1"
             icon={<IndianRupee className="w-6 h-6 text-white" />}
-            delay={0.1}
           />
-          <EarningCard 
-            title="Last 7 Days" 
-            amount={earnings.sevenDay} 
-            gradient="bg-gradient-2" 
-            glow="glow-2"
+          <EarningCard
+            title="Last 7 Days Earning"
+            amount={earnings.sevenDay}
+            gradient="bg-gradient-2"
             icon={<TrendingUp className="w-6 h-6 text-white" />}
-            delay={0.2}
           />
-          <EarningCard 
-            title="Last 30 Days" 
-            amount={earnings.thirtyDay} 
-            gradient="bg-gradient-3" 
-            glow="glow-3"
+          <EarningCard
+            title="Last 30 Days Earning"
+            amount={earnings.thirtyDay}
+            gradient="bg-gradient-3"
             icon={<Wallet className="w-6 h-6 text-white" />}
-            delay={0.3}
           />
-          <EarningCard 
-            title="All Time Earning" 
-            amount={earnings.allTime} 
-            gradient="bg-gradient-4" 
-            glow="glow-4"
+          <EarningCard
+            title="All Time Earning"
+            amount={earnings.allTime}
+            gradient="bg-gradient-4"
             icon={<Award className="w-6 h-6 text-white" />}
-            delay={0.4}
           />
         </section>
       </main>
@@ -120,26 +112,17 @@ export default function Dashboard() {
   );
 }
 
-function EarningCard({ title, amount, gradient, glow, icon, delay }: { title: string, amount: number, gradient: string, glow: string, icon: React.ReactNode, delay: number }) {
+function EarningCard({ title, amount, gradient, icon }: { title: string, amount: number, gradient: string, icon: React.ReactNode }) {
   return (
-    <div 
-      className={`premium-card rounded-3xl p-6 ${gradient} ${glow} relative transform transition-all duration-500 hover:scale-[1.03] hover:-translate-y-1.5`}
-      style={{ animationDelay: `${delay}s` }}
-    >
-      <div className="absolute -right-6 -top-6 w-28 h-28 bg-white/15 rounded-full blur-2xl pointer-events-none"></div>
-      <div className="absolute -left-8 -bottom-8 w-24 h-24 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
-      <div className="relative z-10 flex flex-col h-full justify-between gap-5">
-        <div className="flex items-center justify-between">
-          <h3 className="text-white/85 font-semibold text-xs tracking-widest uppercase">{title}</h3>
-          <div className="p-2.5 bg-white/15 rounded-full backdrop-blur-sm border border-white/20">
-            {icon}
-          </div>
+    <div className={`earning-bar rounded-[2rem] px-6 py-6 sm:py-7 ${gradient}`}>
+      <div className="relative z-10 flex flex-col items-center justify-center gap-1.5 text-center">
+        <div className="mb-1 p-3 bg-white/15 rounded-full border border-white/20">
+          {icon}
         </div>
-        <div>
-          <div className="text-3xl lg:text-4xl font-mono font-extrabold text-white tracking-tight drop-shadow-lg">
-            <CountUp end={amount} duration={2.5} prefix="₹" />
-          </div>
+        <div className="text-3xl sm:text-4xl font-mono font-extrabold text-white tracking-tight">
+          <CountUp end={amount} duration={1} prefix="₹" />
         </div>
+        <h3 className="text-white/90 font-medium text-sm sm:text-base">{title}</h3>
       </div>
     </div>
   );

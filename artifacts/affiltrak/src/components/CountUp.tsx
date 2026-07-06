@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 export function CountUp({ 
   end, 
-  duration = 2, 
+  duration = 1.1, 
   decimals = 0, 
   prefix = "", 
   suffix = "" 
@@ -13,7 +13,16 @@ export function CountUp({
   prefix?: string;
   suffix?: string;
 }) {
-  const [count, setCount] = useState(0);
+  const [displayText, setDisplayText] = useState("0");
+  const formatter = useMemo(
+    () =>
+      new Intl.NumberFormat("en-IN", {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      }),
+    [decimals]
+  );
+  const spanRef = useRef<HTMLSpanElement | null>(null);
 
   useEffect(() => {
     let startTimestamp: number | null = null;
@@ -22,27 +31,37 @@ export function CountUp({
     const step = (timestamp: number) => {
       if (!startTimestamp) startTimestamp = timestamp;
       const progress = Math.min((timestamp - startTimestamp) / (duration * 1000), 1);
-      
-      // easeOutQuart
-      const ease = 1 - Math.pow(1 - progress, 4);
-      setCount(end * ease);
-      
+
+      // easeOutCubic - cheaper than quart, feels smoother/snappier
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const text = formatter.format(end * ease);
+      if (spanRef.current) {
+        spanRef.current.textContent = text;
+      } else {
+        setDisplayText(text);
+      }
+
       if (progress < 1) {
         animationFrameId = window.requestAnimationFrame(step);
       } else {
-        setCount(end);
+        const finalText = formatter.format(end);
+        if (spanRef.current) {
+          spanRef.current.textContent = finalText;
+        }
+        setDisplayText(finalText);
       }
     };
-    
+
     animationFrameId = window.requestAnimationFrame(step);
-    
+
     return () => window.cancelAnimationFrame(animationFrameId);
-  }, [end, duration]);
+  }, [end, duration, formatter]);
 
-  const formatter = new Intl.NumberFormat('en-IN', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
-
-  return <span>{prefix}{formatter.format(count)}{suffix}</span>;
+  return (
+    <span>
+      {prefix}
+      <span ref={spanRef}>{displayText}</span>
+      {suffix}
+    </span>
+  );
 }
