@@ -1,0 +1,1 @@
+- [Workflow naming in artifacts monorepo](artifact-workflow-names.md) — workflows are named `<artifact-dir>: <service-name>` from artifact.toml, not the artifact title.

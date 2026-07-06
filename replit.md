@@ -1,10 +1,11 @@
-# [Project name]
+# AffilTrak
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A single-page affiliate marketing dashboard demo with a dark fintech-style UI showing profile, package tier, and rolling earnings (today / 7-day / 30-day / all-time), plus a no-auth admin panel for editing profile and earnings.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080, mounted at `/api`)
+- `pnpm --filter @workspace/affiltrak run dev` — run the AffilTrak web app (port 20714, mounted at `/`)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
@@ -19,26 +20,40 @@ _Replace the heading above with the project's name, and this line with one sente
 - Validation: Zod (`zod/v4`), `drizzle-zod`
 - API codegen: Orval (from OpenAPI spec)
 - Build: esbuild (CJS bundle)
+- Frontend: React + Vite, react-hook-form, sonner (toasts)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `lib/api-spec/openapi.yaml` — source-of-truth API contract (GET /dashboard, PUT /admin/profile, PUT /admin/earnings)
+- `lib/db/src/schema/profile.ts`, `lib/db/src/schema/earnings.ts` — DB schema (profile table; daily earning ledger keyed by unique `earningDate`)
+- `artifacts/api-server/src/lib/earnings.ts` — computes today/7-day/30-day/all-time sums from the ledger; `setTodayEarning` upserts today's row
+- `artifacts/api-server/src/lib/profile.ts` — profile get-or-create with defaults, and update
+- `artifacts/affiltrak/src/App.tsx` — public dashboard page
+- `artifacts/affiltrak/src/pages/Admin.tsx` — admin panel (`/admin`, no auth)
+- `artifacts/affiltrak/src/hooks/use-withdrawal-toasts.ts` — simulated withdrawal toast (client-side only, random name/phone/amount every 30s)
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Earnings are stored as a **rolling daily ledger** (one row per date), not as running totals — 7-day/30-day/all-time are always derived via date-range sums, so admin edits to "today" never require manually patching other totals.
+- Admin sets an **absolute** value for today's earning (not a delta); the ledger row for today is upserted.
+- The withdrawal toast is purely client-side/simulated (random Indian name, masked phone, ₹5,000–₹37,000 amount) — no backend involvement, per requirements.
+- No authentication on `/admin` — this is a personal single-user tool, not multi-tenant.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Public dashboard (`/`): profile card (photo, name, ID, package badge) + 4 earning cards (Today / Last 7 Days / Last 30 Days / All Time), each with a count-up animation from 0 on every page load.
+- Admin panel (`/admin`, no login): edit profile fields (name, affiliate ID, package tier, photo URL) and set today's absolute earning amount; other totals recompute automatically.
+- Every 30 seconds, a toast slides up from the bottom announcing a simulated withdrawal with a random Indian name, masked phone number, and amount.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Keep scope minimal: single public page + single admin page, no auth, no extra features beyond what was requested.
+- Match the reference screenshots closely (dark fintech aesthetic, gradient earning cards).
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Workflow names in this project are `<artifact-dir>: <service-name>` (e.g. `artifacts/affiltrak: web`), not the artifact's display title — use `listWorkflows()` to confirm before calling `restart_workflow`.
+- `photoUrl` form field can be `null` from the API; bind `value={field.value ?? ""}` in the admin form to avoid a controlled-input type error.
 
 ## Pointers
 
