@@ -99,9 +99,9 @@
 }
 
 .profile-card {
-  background: linear-gradient(135deg, #5eb3f7 0%, #3b6fea 55%, #2447c9 100%);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 10px 30px -8px rgba(37, 99, 235, 0.5);
+  background: linear-gradient(160deg, #f5d060 0%, #e8a820 40%, #c97f10 70%, #b8680a 100%);
+  border: 2px solid rgba(255, 220, 80, 0.4);
+  box-shadow: 0 12px 35px -8px rgba(180, 120, 10, 0.6);
 }
 
 .glass-card {
