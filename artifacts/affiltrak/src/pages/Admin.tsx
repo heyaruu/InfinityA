@@ -46,9 +46,17 @@ function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{
+    <div className="min-h-screen flex items-center justify-center px-4 relative" style={{
       background: "radial-gradient(ellipse at 20% 20%, #0a1a3a 0%, #050c1a 50%, #07100a 100%)"
     }}>
+      {/* Back button top-left */}
+      <Link href="/" className="absolute top-4 left-4 flex items-center gap-1.5 text-white/50 hover:text-white/90 transition-colors text-sm font-medium group">
+        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/10 group-hover:bg-white/10 transition-colors">
+          <ArrowLeft className="w-4 h-4" />
+        </div>
+        <span>Back</span>
+      </Link>
+
       <div className={`w-full max-w-sm ${shaking ? "animate-shake" : ""}`}>
         {/* Logo / Brand */}
         <div className="flex flex-col items-center mb-8 gap-3">
