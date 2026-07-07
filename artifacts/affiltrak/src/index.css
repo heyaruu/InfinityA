@@ -122,6 +122,22 @@
   100% { transform: translateY(-100vh) scale(0.3) translateX(calc(sin(var(--i,0)) * 40px)); opacity: 0; }
 }
 
+/* ── InfinityAdX 3D Title ── */
+.infinity-3d-text {
+  background: linear-gradient(180deg, #7ee8fa 0%, #38b6ff 40%, #1a6fe8 70%, #0a3fa8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  filter:
+    drop-shadow(0 1px 0 #0050cc)
+    drop-shadow(0 2px 0 #003fa0)
+    drop-shadow(0 3px 0 #002e78)
+    drop-shadow(0 4px 6px rgba(0,80,200,0.5))
+    drop-shadow(0 0 18px rgba(56,182,255,0.6));
+  letter-spacing: 0.02em;
+}
+
 /* ── Dashboard Header ── */
 .dash-header {
   background: linear-gradient(135deg, #0d2a6e 0%, #0a4a3a 50%, #1a3a10 100%);

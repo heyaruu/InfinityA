@@ -43,8 +43,8 @@ export default function Dashboard() {
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <img src="/logo.png" alt="InfinityAdX" className="w-9 h-9 rounded-xl object-cover shadow-lg shadow-blue-500/40" />
-            <h1 className="text-xl font-extrabold tracking-tight text-white" style={{ textShadow: "0 0 20px rgba(100,200,255,0.5)" }}>
-              InfinityAdX Dashboard
+            <h1 className="infinity-3d-text text-xl font-extrabold tracking-tight">
+              InfinityAdX
             </h1>
           </div>
           <Link href="/admin" className="p-2 rounded-full hover:bg-white/10 transition-colors">
