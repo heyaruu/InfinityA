@@ -102,7 +102,12 @@ export default function Admin() {
   };
 
   const updateSingleMetric = (field: keyof z.infer<typeof earningsSchema>, label: string) => {
-    const amount = earningsForm.getValues(field);
+    const raw = earningsForm.getValues(field);
+    const amount = Number(raw);
+    if (isNaN(amount) || amount < 0) {
+      toast.error("Please enter a valid positive number");
+      return;
+    }
     updateEarningMetric.mutate(
       { data: { field, amount } },
       {

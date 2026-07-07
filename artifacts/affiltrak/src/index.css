@@ -99,9 +99,17 @@
 }
 
 .profile-card {
-  background: linear-gradient(160deg, #f5d060 0%, #e8a820 40%, #c97f10 70%, #b8680a 100%);
-  border: 2px solid rgba(255, 220, 80, 0.4);
-  box-shadow: 0 12px 35px -8px rgba(180, 120, 10, 0.6);
+  background: linear-gradient(170deg, #fde27a 0%, #f0b429 30%, #d4860c 65%, #a85f06 100%);
+  border: 2.5px solid rgba(255, 240, 150, 0.7);
+  border-left: 3.5px solid rgba(255, 255, 200, 0.85);
+  border-right: 3.5px solid rgba(255, 255, 200, 0.85);
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.35) inset,
+    0 -2px 0 rgba(0, 0, 0, 0.18) inset,
+    0 18px 40px -8px rgba(160, 90, 0, 0.7),
+    0 6px 16px -4px rgba(220, 140, 0, 0.5),
+    4px 8px 20px -4px rgba(0, 0, 0, 0.45);
+  transform: perspective(600px) rotateX(1deg);
 }
 
 .glass-card {

@@ -58,26 +58,38 @@ export default function Dashboard() {
       <main className="container mx-auto px-4 py-8 space-y-8">
         {/* Profile Card */}
         <section className="profile-card rounded-3xl py-8 px-6 relative overflow-hidden">
+          {/* Top shine strip */}
+          <div className="absolute top-0 left-6 right-6 h-[2px] rounded-full bg-gradient-to-r from-transparent via-white/70 to-transparent"></div>
+
           <div className="flex flex-col items-center gap-4">
             {/* GK ID at top */}
-            <p className="text-white font-extrabold text-2xl tracking-widest drop-shadow">
+            <p className="text-white font-extrabold text-2xl tracking-widest" style={{textShadow: "0 1px 4px rgba(0,0,0,0.4)"}}>
               {profile.affiliateId}
             </p>
 
-            {/* Circular avatar with white ring */}
+            {/* Circular avatar — thick white ring + gold outer glow */}
             <div className="relative">
-              <div className="absolute -inset-[3px] rounded-full bg-gradient-to-b from-white via-white/80 to-white/50"></div>
-              <Avatar className="relative w-32 h-32 border-4 border-[#c9a227]">
+              <div className="absolute -inset-[5px] rounded-full bg-gradient-to-b from-white to-white/60 shadow-lg"></div>
+              <div className="absolute -inset-[9px] rounded-full bg-gradient-to-br from-yellow-200/40 to-transparent"></div>
+              <Avatar className="relative w-32 h-32 border-[5px] border-[#c9a227]">
                 {profile.photoUrl ? <AvatarImage src={profile.photoUrl} alt={profile.name} className="object-cover" /> : null}
-                <AvatarFallback className="text-4xl font-bold bg-[#b8941f] text-white">{getInitials(profile.name)}</AvatarFallback>
+                <AvatarFallback className="text-4xl font-bold bg-[#a07010] text-white">{getInitials(profile.name)}</AvatarFallback>
               </Avatar>
             </div>
 
             {/* Name */}
-            <h2 className="text-white font-extrabold text-3xl tracking-tight drop-shadow">{profile.name}</h2>
+            <h2 className="text-white font-extrabold text-3xl tracking-tight" style={{textShadow: "0 2px 8px rgba(0,0,0,0.35)"}}>
+              {profile.name}
+            </h2>
 
             {/* Package badge */}
-            <span className="px-8 py-2 rounded-full font-semibold text-white text-base" style={{background: "linear-gradient(90deg, #38b6ff 0%, #1a6fe8 100%)"}}>
+            <span
+              className="px-8 py-2.5 rounded-full font-semibold text-white text-base tracking-wide"
+              style={{
+                background: "linear-gradient(90deg, #38b6ff 0%, #1a6fe8 100%)",
+                boxShadow: "0 4px 14px -2px rgba(26,111,232,0.6), 0 1px 0 rgba(255,255,255,0.2) inset",
+              }}
+            >
               {profile.packageLabel}
             </span>
           </div>
