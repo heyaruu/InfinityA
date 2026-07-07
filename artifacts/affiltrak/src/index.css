@@ -124,25 +124,28 @@
 
 /* ── InfinityAdX 3D Title ── */
 .infinity-3d-text {
-  background: linear-gradient(180deg, #7ee8fa 0%, #38b6ff 40%, #1a6fe8 70%, #0a3fa8 100%);
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  background: linear-gradient(180deg, #a8f0ff 0%, #38d6f5 30%, #0ea5e9 60%, #0369a1 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-shadow: none;
   filter:
-    drop-shadow(0 1px 0 #0050cc)
-    drop-shadow(0 2px 0 #003fa0)
-    drop-shadow(0 3px 0 #002e78)
-    drop-shadow(0 4px 6px rgba(0,80,200,0.5))
-    drop-shadow(0 0 18px rgba(56,182,255,0.6));
-  letter-spacing: 0.02em;
+    drop-shadow(0 1px 0 rgba(0,60,140,0.9))
+    drop-shadow(0 2px 0 rgba(0,40,110,0.8))
+    drop-shadow(0 3px 0 rgba(0,30,80,0.7))
+    drop-shadow(0 5px 10px rgba(0,100,220,0.55))
+    drop-shadow(0 0 22px rgba(56,214,245,0.7));
 }
 
 /* ── Dashboard Header ── */
 .dash-header {
-  background: linear-gradient(135deg, #0d2a6e 0%, #0a4a3a 50%, #1a3a10 100%);
-  border-bottom: 1px solid rgba(100, 220, 255, 0.15);
-  box-shadow: 0 2px 20px rgba(0, 100, 200, 0.25);
+  background: linear-gradient(135deg, #0a1e4a 0%, #0c2460 50%, #081830 100%);
+  border-bottom: 1px solid rgba(56, 214, 245, 0.2);
+  box-shadow:
+    0 2px 0 rgba(56, 214, 245, 0.08),
+    0 4px 24px rgba(0, 30, 100, 0.6);
 }
 
 /* ── Earning Cards ── */
