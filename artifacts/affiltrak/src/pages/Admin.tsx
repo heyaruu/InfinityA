@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -13,7 +13,7 @@ import {
 import { ObjectUploader } from "@workspace/object-storage-web";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ArrowLeft, Save, IndianRupee, User, ShieldAlert, Upload } from "lucide-react";
+import { ArrowLeft, Save, IndianRupee, User, ShieldAlert, Upload, Lock, LogOut, Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,128 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+
+const ADMIN_ID = "admin@arman";
+const ADMIN_PASS = "arman888";
+const SESSION_KEY = "iadx_admin_auth";
+
+function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
+  const [id, setId] = useState("");
+  const [pass, setPass] = useState("");
+  const [showPass, setShowPass] = useState(false);
+  const [error, setError] = useState("");
+  const [shaking, setShaking] = useState(false);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (id === ADMIN_ID && pass === ADMIN_PASS) {
+      sessionStorage.setItem(SESSION_KEY, "1");
+      onSuccess();
+    } else {
+      setError("Invalid ID or Password");
+      setShaking(true);
+      setTimeout(() => setShaking(false), 500);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center px-4" style={{
+      background: "radial-gradient(ellipse at 20% 20%, #0a1a3a 0%, #050c1a 50%, #07100a 100%)"
+    }}>
+      <div className={`w-full max-w-sm ${shaking ? "animate-shake" : ""}`}>
+        {/* Logo / Brand */}
+        <div className="flex flex-col items-center mb-8 gap-3">
+          <img src="/logo.png" alt="InfinityAdX" className="w-16 h-16 rounded-2xl shadow-xl shadow-blue-900/50" />
+          <h1 className="infinity-3d-text text-2xl font-black tracking-wide">InfinityAdX</h1>
+          <p className="text-white/50 text-sm">Admin Panel Access</p>
+        </div>
+
+        {/* Login Card */}
+        <div style={{
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(56,214,245,0.2)",
+          borderRadius: "1.5rem",
+          boxShadow: "0 20px 60px -10px rgba(0,20,80,0.8), 0 0 0 1px rgba(56,214,245,0.05)",
+          padding: "2rem",
+        }}>
+          <div className="flex items-center gap-2 mb-6">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{background: "linear-gradient(135deg,#0ea5e9,#1d4ed8)"}}>
+              <Lock className="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <p className="text-white font-bold text-base leading-tight">Secure Login</p>
+              <p className="text-white/40 text-xs">Enter your credentials</p>
+            </div>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-white/70 text-sm font-medium">Admin ID</label>
+              <Input
+                type="text"
+                placeholder="admin@arman"
+                value={id}
+                onChange={e => { setId(e.target.value); setError(""); }}
+                className="bg-white/5 border-white/10 text-white placeholder:text-white/25 focus:border-cyan-500/50 h-11"
+                autoComplete="username"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-white/70 text-sm font-medium">Password</label>
+              <div className="relative">
+                <Input
+                  type={showPass ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={pass}
+                  onChange={e => { setPass(e.target.value); setError(""); }}
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/25 focus:border-cyan-500/50 h-11 pr-10"
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPass(v => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors"
+                >
+                  {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            {error && (
+              <p className="text-red-400 text-sm font-medium flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-400 inline-block" />
+                {error}
+              </p>
+            )}
+
+            <Button
+              type="submit"
+              className="w-full h-11 font-bold text-base mt-2"
+              style={{
+                background: "linear-gradient(135deg, #0ea5e9 0%, #1d4ed8 100%)",
+                boxShadow: "0 6px 20px -4px rgba(14,165,233,0.5)",
+              }}
+            >
+              <Lock className="w-4 h-4 mr-2" /> Login
+            </Button>
+          </form>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes shake {
+          0%,100% { transform: translateX(0); }
+          20% { transform: translateX(-8px); }
+          40% { transform: translateX(8px); }
+          60% { transform: translateX(-6px); }
+          80% { transform: translateX(6px); }
+        }
+        .animate-shake { animation: shake 0.45s ease-in-out; }
+      `}</style>
+    </div>
+  );
+}
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -44,6 +166,14 @@ const EARNING_FIELDS: { field: keyof z.infer<typeof earningsSchema>; label: stri
 ];
 
 export default function Admin() {
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem(SESSION_KEY) === "1");
+
+  if (!authed) return <AdminLogin onSuccess={() => setAuthed(true)} />;
+
+  return <AdminPanel onLogout={() => { sessionStorage.removeItem(SESSION_KEY); setAuthed(false); }} />;
+}
+
+function AdminPanel({ onLogout }: { onLogout: () => void }) {
   const { data: dashboard, isLoading } = useGetDashboard();
   const updateProfile = useUpdateProfile();
   const updateEarningMetric = useUpdateEarningMetric();
@@ -148,6 +278,14 @@ export default function Admin() {
               <ShieldAlert className="w-5 h-5 text-primary" /> Admin Panel
             </h1>
           </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onLogout}
+            className="text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-1.5"
+          >
+            <LogOut className="w-4 h-4" /> Logout
+          </Button>
         </div>
       </header>
 
