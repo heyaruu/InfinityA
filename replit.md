@@ -34,7 +34,9 @@ A single-page affiliate marketing dashboard demo with a dark fintech-style UI sh
 
 ## Architecture decisions
 
-- Earnings are stored as a **rolling daily ledger** (one row per date), not as running totals — 7-day/30-day/all-time are always derived via date-range sums, so admin edits to "today" never require manually patching other totals.
+- Earnings cascade forward only, never backward: `today` comes from the daily ledger; `sevenDay = today + sevenDayExtra`; `thirtyDay = sevenDay + thirtyDayExtra`; `allTime = thirtyDay + allTimeExtra`. The `*Extra` values live in the singleton `earnings_adjustments` table (`artifacts/api-server/src/lib/earnings.ts`).
+  - Editing `today` changes a value every other bucket is built on, so 7-day/30-day/all-time all shift by the same amount automatically.
+  - Editing `sevenDay`/`thirtyDay`/`allTime` only solves for that bucket's own `*Extra` (so larger windows cascade forward) and never touches a smaller window. This was a deliberate fix for a bug where editing 7-day/30-day used to silently change "today" too.
 - Admin sets an **absolute** value for today's earning (not a delta); the ledger row for today is upserted.
 - The withdrawal toast is purely client-side/simulated (random Indian name, masked phone, ₹5,000–₹37,000 amount) — no backend involvement, per requirements.
 - No authentication on `/admin` — this is a personal single-user tool, not multi-tenant.

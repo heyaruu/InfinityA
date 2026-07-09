@@ -250,7 +250,7 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
       { data: { field, amount } },
       {
         onSuccess: (data) => {
-          toast.success(`${label} updated — other totals recalculated automatically`);
+          toast.success(`${label} updated — larger windows cascaded automatically`);
           queryClient.setQueryData(getGetDashboardQueryKey(), data);
           earningsForm.reset({
             today: data.earnings.today,
@@ -437,7 +437,7 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
                 <IndianRupee className="w-5 h-5 text-green-500" /> Earnings
               </CardTitle>
               <CardDescription>
-                Edit any stat directly. All others (today, 7-day, 30-day, all-time) recalculate automatically to stay consistent.
+                Each stat only cascades forward: editing Today updates 7-day/30-day/All Time, editing 7-day updates 30-day/All Time, and editing 30-day updates All Time. Editing a larger window never changes a smaller one.
               </CardDescription>
             </CardHeader>
             <CardContent>

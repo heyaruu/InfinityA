@@ -5,7 +5,15 @@ import { useWithdrawalToasts } from "@/hooks/use-withdrawal-toasts";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
-import { Settings, Activity, Award } from "lucide-react";
+import { Menu, ShieldCheck, Home, HelpCircle } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
 
 export default function Dashboard() {
   const { data: dashboard, isLoading, error } = useGetDashboard();
@@ -42,14 +50,53 @@ export default function Dashboard() {
       <header className="dash-header sticky top-0 z-50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <img src="/logo.png" alt="InfinityAdX" className="w-9 h-9 rounded-xl object-cover shadow-lg shadow-blue-500/40" />
+            <img src="/logo-icon.png" alt="InfinityAdX" className="w-9 h-9 rounded-xl object-cover shadow-lg shadow-blue-500/40" />
             <h1 className="infinity-3d-text text-xl font-extrabold tracking-tight">
               InfinityAdX
             </h1>
           </div>
-          <Link href="/admin" className="p-2 rounded-full hover:bg-white/10 transition-colors">
-            <Settings className="w-5 h-5 text-white/70 hover:text-white" />
-          </Link>
+
+          <div className="flex items-center gap-3">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  aria-label="Menu"
+                  className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                >
+                  <Menu className="w-5 h-5 text-white/70 hover:text-white" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-[#0b1a3a] border-white/10 text-white">
+                <DropdownMenuLabel className="text-white/50 text-xs">InfinityAdX</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-white/10" />
+                <DropdownMenuItem asChild className="focus:bg-white/10 focus:text-white cursor-pointer">
+                  <Link href="/" className="flex items-center gap-2 w-full">
+                    <Home className="w-4 h-4" /> Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="focus:bg-white/10 focus:text-white cursor-pointer">
+                  <Link href="/admin" className="flex items-center gap-2 w-full">
+                    <ShieldCheck className="w-4 h-4" /> Admin Panel
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-white/10" />
+                <DropdownMenuItem disabled className="opacity-40 flex items-center gap-2">
+                  <HelpCircle className="w-4 h-4" /> Support
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Link href="/admin" aria-label="Admin shortcut" className="admin-avatar-ring rounded-full">
+              <Avatar className="w-9 h-9">
+                {profile.photoUrl ? (
+                  <AvatarImage src={profile.photoUrl} alt={profile.name} className="object-cover" />
+                ) : null}
+                <AvatarFallback className="text-xs font-bold bg-[#1a2f5c] text-white">
+                  {getInitials(profile.name)}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -62,8 +109,8 @@ export default function Dashboard() {
               {profile.affiliateId}
             </p>
             <div className="relative">
+              <div className="absolute -inset-[9px] rounded-full profile-avatar-conic-ring" />
               <div className="absolute -inset-[5px] rounded-full bg-gradient-to-b from-white to-white/60 shadow-lg" />
-              <div className="absolute -inset-[9px] rounded-full bg-gradient-to-br from-yellow-200/40 to-transparent" />
               <Avatar className="relative w-32 h-32 border-[5px] border-[#c9a227]">
                 {profile.photoUrl ? <AvatarImage src={profile.photoUrl} alt={profile.name} className="object-cover" /> : null}
                 <AvatarFallback className="text-4xl font-bold bg-[#a07010] text-white">{getInitials(profile.name)}</AvatarFallback>
