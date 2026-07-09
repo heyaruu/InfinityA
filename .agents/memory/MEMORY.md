@@ -1,2 +1,3 @@
 - [Workflow naming in artifacts monorepo](artifact-workflow-names.md) — workflows are named `<artifact-dir>: <service-name>` from artifact.toml, not the artifact title.
 - [Forward-only cascading metric edits](earnings-cascade-pattern.md) — window rollups (today/7d/30d/all-time) should stack as `prev + extra` so edits cascade forward only, never backward.
+- [Concurrency-safe wallet withdrawals](wallet-withdrawal-concurrency.md) — balance check + debit insert must be one SERIALIZABLE transaction, or concurrent requests can double-spend.

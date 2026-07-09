@@ -94,6 +94,44 @@ export const UpdateEarningMetricResponse = zod.object({
 
 
 /**
+ * Returns the available wallet balance (all-time earnings minus successful withdrawals) and recent withdrawal history.
+ * @summary Get wallet balance and withdrawal history
+ */
+export const GetWalletResponse = zod.object({
+  "balance": zod.number(),
+  "history": zod.array(zod.object({
+  "id": zod.number(),
+  "amount": zod.number(),
+  "status": zod.string(),
+  "createdAt": zod.string()
+}))
+})
+
+
+/**
+ * Creates a withdrawal request for the given amount. Fails if the amount exceeds the available balance.
+ * @summary Request a withdrawal from the wallet
+ */
+export const requestWithdrawalBodyAmountExclusiveMin = 0;
+
+
+
+export const RequestWithdrawalBody = zod.object({
+  "amount": zod.number().gt(requestWithdrawalBodyAmountExclusiveMin)
+})
+
+export const RequestWithdrawalResponse = zod.object({
+  "balance": zod.number(),
+  "history": zod.array(zod.object({
+  "id": zod.number(),
+  "amount": zod.number(),
+  "status": zod.string(),
+  "createdAt": zod.string()
+}))
+})
+
+
+/**
  * Returns a presigned GCS URL for direct upload. The client sends JSON
  * metadata here, then uploads the file directly to the returned URL.
  * @summary Request a presigned URL for file upload

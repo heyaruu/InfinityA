@@ -51,6 +51,23 @@ export interface UpdateEarningsRequest {
   amount: number;
 }
 
+export interface WithdrawalHistoryItem {
+  id: number;
+  amount: number;
+  status: string;
+  createdAt: string;
+}
+
+export interface WalletResponse {
+  balance: number;
+  history: WithdrawalHistoryItem[];
+}
+
+export interface WithdrawRequest {
+  /** @exclusiveMinimum 0 */
+  amount: number;
+}
+
 export interface UploadUrlRequest {
   /**
      * Original file name.

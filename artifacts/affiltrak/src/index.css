@@ -251,6 +251,21 @@
   transform: perspective(600px) rotateX(1deg);
 }
 
+/* Wallet section */
+.wallet-card {
+  background: linear-gradient(160deg, rgba(14, 25, 58, 0.9) 0%, rgba(6, 12, 30, 0.95) 100%);
+  border: 1px solid rgba(56, 214, 245, 0.15);
+  box-shadow: 0 20px 50px -20px rgba(0, 20, 80, 0.7), 0 0 0 1px rgba(56, 214, 245, 0.04);
+}
+.wallet-balance-box {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.18) 0%, rgba(29, 78, 216, 0.18) 100%);
+  border: 1px solid rgba(56, 214, 245, 0.2);
+}
+.wallet-history-row {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
 /* Profile card avatar: rotating conic gold ring */
 .profile-avatar-conic-ring {
   background: conic-gradient(from 0deg, #fff6cc, #d4860c, #fde27a, #a85f06, #fff6cc);

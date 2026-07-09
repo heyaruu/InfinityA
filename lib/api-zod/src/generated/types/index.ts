@@ -16,3 +16,6 @@ export * from './updateEarningsRequestField';
 export * from './updateProfileRequest';
 export * from './uploadUrlRequest';
 export * from './uploadUrlResponse';
+export * from './walletResponse';
+export * from './withdrawalHistoryItem';
+export * from './withdrawRequest';
