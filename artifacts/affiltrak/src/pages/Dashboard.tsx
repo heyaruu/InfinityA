@@ -1,15 +1,19 @@
-import React, { useState } from "react";
-import { useGetDashboard, useGetWallet, useRequestWithdrawal, getGetWalletQueryKey } from "@workspace/api-client-react";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import React from "react";
+import { useGetDashboard } from "@workspace/api-client-react";
 import { CountUp } from "@/components/CountUp";
 import { useWithdrawalToasts } from "@/hooks/use-withdrawal-toasts";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Link } from "wouter";
-import { Wallet as WalletIcon, ArrowDownToLine, CheckCircle2, Clock } from "lucide-react";
+import { ShieldCheck, Wallet as WalletIcon } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 export default function Dashboard() {
   const { data: dashboard, isLoading, error } = useGetDashboard();
@@ -53,16 +57,34 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Link href="/admin" aria-label="Admin shortcut" className="admin-avatar-ring rounded-full">
-              <Avatar className="w-9 h-9">
-                {profile.photoUrl ? (
-                  <AvatarImage src={profile.photoUrl} alt={profile.name} className="object-cover" />
-                ) : null}
-                <AvatarFallback className="text-xs font-bold bg-[#1a2f5c] text-white">
-                  {getInitials(profile.name)}
-                </AvatarFallback>
-              </Avatar>
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button aria-label="Profile menu" className="admin-avatar-ring rounded-full">
+                  <Avatar className="w-9 h-9">
+                    {profile.photoUrl ? (
+                      <AvatarImage src={profile.photoUrl} alt={profile.name} className="object-cover" />
+                    ) : null}
+                    <AvatarFallback className="text-xs font-bold bg-[#1a2f5c] text-white">
+                      {getInitials(profile.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-[#0b1a3a] border-white/10 text-white">
+                <DropdownMenuLabel className="text-white/50 text-xs">{profile.name}</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-white/10" />
+                <DropdownMenuItem asChild className="focus:bg-white/10 focus:text-white cursor-pointer">
+                  <Link href="/admin" className="flex items-center gap-2 w-full">
+                    <ShieldCheck className="w-4 h-4" /> Admin Panel
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="focus:bg-white/10 focus:text-white cursor-pointer">
+                  <Link href="/wallet" className="flex items-center gap-2 w-full">
+                    <WalletIcon className="w-4 h-4" /> Wallet
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
@@ -105,128 +127,8 @@ export default function Dashboard() {
           <EarningCard title="Last 30 Days Earning" amount={earnings.thirtyDay} cardClass="ec-amber"  />
           <EarningCard title="All Time Earning"     amount={earnings.allTime}   cardClass="ec-purple" />
         </section>
-
-        {/* Wallet */}
-        <WalletSection />
       </main>
     </div>
-  );
-}
-
-function formatInr(amount: number): string {
-  return `₹${amount.toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
-}
-
-function WalletSection() {
-  const { data: wallet, isLoading, error, refetch } = useGetWallet();
-  const requestWithdrawal = useRequestWithdrawal();
-  const queryClient = useQueryClient();
-  const [amount, setAmount] = useState("");
-
-  const handleWithdraw = (e: React.FormEvent) => {
-    e.preventDefault();
-    const value = Number(amount);
-
-    if (!amount || isNaN(value) || value <= 0) {
-      toast.error("Please enter a valid withdrawal amount");
-      return;
-    }
-
-    if (wallet && value > wallet.balance) {
-      toast.error("Withdrawal amount exceeds your available wallet balance");
-      return;
-    }
-
-    requestWithdrawal.mutate(
-      { data: { amount: value } },
-      {
-        onSuccess: (data) => {
-          toast.success(`Withdrawal successful! ${formatInr(value)} has been processed.`);
-          queryClient.setQueryData(getGetWalletQueryKey(), data);
-          setAmount("");
-        },
-        onError: () => toast.error("Withdrawal failed, please try again"),
-      },
-    );
-  };
-
-  return (
-    <section className="wallet-card rounded-3xl p-6 relative overflow-hidden">
-      <div className="flex items-center gap-2 mb-5">
-        <WalletIcon className="w-5 h-5 text-cyan-300" />
-        <h2 className="text-white font-extrabold text-xl tracking-tight">Wallet</h2>
-      </div>
-
-      {error ? (
-        <div className="flex flex-col items-center gap-3 py-8 text-center">
-          <p className="text-white/60 text-sm">Failed to load wallet. Please try again.</p>
-          <Button type="button" variant="outline" onClick={() => refetch()} className="border-white/15 text-white hover:bg-white/10">
-            Retry
-          </Button>
-        </div>
-      ) : isLoading || !wallet ? (
-        <Skeleton className="w-full h-40 rounded-2xl bg-white/5" />
-      ) : (
-        <>
-          <div className="wallet-balance-box rounded-2xl p-5 mb-5">
-            <p className="text-white/60 text-sm font-medium">Available Balance</p>
-            <p className="text-white font-extrabold text-4xl tracking-tight mt-1">
-              <CountUp end={wallet.balance} duration={1} prefix="₹" />
-            </p>
-          </div>
-
-          <form onSubmit={handleWithdraw} className="flex flex-col gap-3 sm:flex-row sm:items-end mb-5">
-            <div className="flex-1">
-              <label htmlFor="withdraw-amount" className="text-white/70 text-sm font-medium mb-1.5 block">
-                Withdraw Amount (₹)
-              </label>
-              <Input
-                id="withdraw-amount"
-                type="number"
-                min="1"
-                placeholder="Enter amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="bg-white/5 border-white/15 text-white placeholder:text-white/30 h-12 text-base"
-              />
-            </div>
-            <Button
-              type="submit"
-              disabled={requestWithdrawal.isPending}
-              className="h-12 px-6 font-bold gap-2 shrink-0"
-              style={{
-                background: "linear-gradient(135deg, #0ea5e9 0%, #1d4ed8 100%)",
-                boxShadow: "0 6px 20px -4px rgba(14,165,233,0.5)",
-              }}
-            >
-              <ArrowDownToLine className="w-4 h-4" />
-              {requestWithdrawal.isPending ? "Processing..." : "Withdraw"}
-            </Button>
-          </form>
-
-          {wallet.history.length > 0 && (
-            <div className="space-y-2">
-              <p className="text-white/50 text-xs font-semibold uppercase tracking-wider">Recent Withdrawals</p>
-              {wallet.history.map((item) => (
-                <div key={item.id} className="wallet-history-row flex items-center justify-between rounded-xl px-4 py-3">
-                  <div className="flex items-center gap-2.5">
-                    {item.status === "success" ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    ) : (
-                      <Clock className="w-4 h-4 text-amber-400" />
-                    )}
-                    <span className="text-white font-semibold">{formatInr(item.amount)}</span>
-                  </div>
-                  <span className="text-white/40 text-xs">
-                    {new Date(item.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </>
-      )}
-    </section>
   );
 }
 
