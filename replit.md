@@ -55,6 +55,12 @@ A single-page affiliate marketing dashboard demo with a dark fintech-style UI sh
 - Workflow names in this project are `<artifact-dir>: <service-name>` (e.g. `artifacts/affiltrak: web`), not the artifact's display title — use `listWorkflows()` to confirm before calling `restart_workflow`.
 - `photoUrl` form field can be `null` from the API; bind `value={field.value ?? ""}` in the admin form to avoid a controlled-input type error.
 
+## Setup status (imported project)
+
+- Dependencies installed (`pnpm install`), DB schema pushed (`pnpm --filter @workspace/db run push`) against the pre-provisioned `DATABASE_URL`.
+- Artifact workflows registered and running: `artifacts/api-server: API Server` (port 8080) and `artifacts/affiltrak: web` (port 20714, mounted at `/`).
+- Seeded profile/earnings via the admin API to match the user's reference screenshots: name "Arman", affiliate ID `GK-8749513`, "Silver Package", today's earning ₹176.
+
 ## Pointers
 
 - See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
