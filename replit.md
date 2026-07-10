@@ -1,6 +1,6 @@
-# AffilTrak
+# InfinityAdX
 
-A single-page affiliate marketing dashboard demo with a dark fintech-style UI showing profile, package tier, and rolling earnings (today / 7-day / 30-day / all-time), plus a no-auth admin panel for editing profile and earnings.
+A single-page affiliate marketing dashboard demo (formerly "AffilTrak") with a dark fintech-style UI showing profile, package tier, and rolling earnings (today / 7-day / 30-day / all-time), plus a no-auth admin panel for editing profile and earnings. The workspace package/artifact directory is still named `affiltrak` internally — only the user-facing branding changed to InfinityAdX.
 
 ## Run & Operate
 

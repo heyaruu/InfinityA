@@ -1,6 +1,6 @@
 kind = "web"
 previewPath = "/"
-title = "AffilTrak"
+title = "InfinityAdX"
 version = "1.0.0"
 id = "artifacts/affiltrak"
 router = "path"
